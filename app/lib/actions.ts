@@ -26,9 +26,12 @@ export async function createInvoice(formData: FormData) {
   const amountInCents = amount * 100;
   // 格式化创建日期
   const date = new Date().toISOString().split('T')[0];
-
-  // 插入数据库
-  await sql`INSERT INTO invoices (customer_id, amount, status, date) VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
+  try {
+    // 插入数据库
+    await sql`INSERT INTO invoices (customer_id, amount, status, date) VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
+  } catch (error) {
+    return { message: 'Database Error: Failed to create invoice.' };
+  }
 
   // 重新生成缓存
   revalidatePath('/dashboard/invoices');
@@ -44,8 +47,11 @@ export async function updateInvoice(id: string, formData: FormData) {
 
   // 转换为美分
   const amountInCents = amount * 100;
-
-  await sql`UPDATE invoices SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status} WHERE id = ${id}`;
+  try {
+    await sql`UPDATE invoices SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status} WHERE id = ${id}`;
+  } catch (error) {
+    return { message: 'Database Error: Failed to update invoice.' };
+  }
 
   // 清除客户端缓存并发出新的服务器请求
   revalidatePath('/dashboard/invoices');
@@ -55,6 +61,10 @@ export async function updateInvoice(id: string, formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
+  try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
+  } catch (error) {
+    return { message: 'Database Error: Failed to delete invoice.' };
+  }
 }
