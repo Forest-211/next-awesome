@@ -4,23 +4,43 @@ import { sql } from '@vercel/postgres';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
 
+export type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+
 const FormSchema = z.object({
   id: z.string(),
-  customerId: z.string(),
-  amount: z.coerce.number(),
-  status: z.enum(['pending', 'paid']),
+  customerId: z.string({ invalid_type_error: 'Please select a customer.' }),
+  amount: z.coerce
+    .number()
+    .gt(0, { message: 'Amount must be greater than $0.' }),
+  status: z.enum(['pending', 'paid'], {
+    invalid_type_error: 'please select an invoice status.',
+  }),
   date: z.string(),
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
-export async function createInvoice(formData: FormData) {
-  const { customerId, amount, status } = CreateInvoice.parse({
+export async function createInvoice(prevState: State, formData: FormData) {
+  const validateFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
+  if (!validateFields.success) {
+    return {
+      errors: validateFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
+  const { customerId, amount, status } = validateFields.data;
   console.log('raw form data:', customerId, amount, status);
   // 将金额转换为美分
   const amountInCents = amount * 100;
@@ -37,13 +57,25 @@ export async function createInvoice(formData: FormData) {
   revalidatePath('/dashboard/invoices');
 }
 
-export async function updateInvoice(id: string, formData: FormData) {
+export async function updateInvoice(
+  id: string,
+  prevState: State,
+  formData: FormData,
+) {
   // 提取数据
-  const { customerId, amount, status } = UpdateInvoice.parse({
+  const validateFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
+
+  if (!validateFields.success) {
+    return {
+      errors: validateFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+  }
+  const { customerId, amount, status } = validateFields.data;
 
   // 转换为美分
   const amountInCents = amount * 100;
