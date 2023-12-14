@@ -27,13 +27,13 @@ function PostCard(post: Blog) {
 }
 
 export default function Home() {
-    const posts = allBlogs.sort((a: any, b: any) =>
+    const posts = allBlogs.sort((a: Blog, b: Blog) =>
         compareDesc(new Date(a.date), new Date(b.date))
     );
 
     return (
-        <div className="mx-auto max-w-xl py-8">
-            {posts.map((post: any, idx: number) => (
+        <div className="mx-auto max-w-5/6 py-8">
+            {posts.map((post: Blog, idx: number) => (
                 <PostCard key={idx} {...post} />
             ))}
         </div>
