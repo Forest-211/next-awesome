@@ -1,12 +1,15 @@
 'use client';
 import React from 'react'
-import ServerComponentExample from '../server-components/example'
 
-function ClientComponentExample() {
+function ClientComponentExample({
+    children,
+}: {
+    children: React.ReactNode
+}) {
     return (
         <div>
             <h2>Client Component Example</h2>
-            <ServerComponentExample />
+            {children}
         </div>
     )
 }
