@@ -5,7 +5,8 @@ interface Dog {
     status: string
 }
 async function getData() {
-    const res = await fetch('https://dog.ceo/api/breed/appenzeller/images/random')
+    const { signal } = new AbortController()
+    const res = await fetch('https://dog.ceo/api/breed/appenzeller/images/random', { signal })
     return res.json() as Promise<Dog>
 }
 
