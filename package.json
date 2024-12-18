@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "nodemon",
-    "build": "next build",
-    "start": "NODE_ENV=production pm2 start ./server.js",
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
     "lint": "next lint"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
