@@ -3,7 +3,7 @@
 ## 克隆项目
 
 ```sh
-git clone -b nextjs-env-dir-custom-server https://github.com/clin211/next-awesome/tree/nextjs-env-dir-custom-server
+git clone -b custom-server https://github.com/clin211/next-awesome/tree/custom-server
 ```
 
 ## 安装依赖
