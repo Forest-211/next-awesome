@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
                 pathname: '/**', // 路径
                 search: '', // 配置参数
             },
+            {
+                protocol: 'https', // 协议
+                hostname: 'images.pexels.com', // 域名
+                port: '', // 端口
+                pathname: '/photos/**', // 路径
+                search: '', // 配置参数
+            }
         ],
     },
 };
