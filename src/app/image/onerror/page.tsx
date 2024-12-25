@@ -10,13 +10,14 @@ export default function Page() {
     return (
         <Image
             loader={imageLoader}
-            src="pexels-photo-1152853.jpeg"
+            src="pexels-photo-115285311.jpeg" // 有效地址 pexels-photo-1152853.jpeg
             alt="Picture of the author"
             width={1260}
             height={750}
             className='w-36'
             priority
-            onLoad={e => console.log('on load natural width:', e.currentTarget.naturalWidth)}
+            onError={e => console.log('on error event:', e)}
         />
     )
 }
+

@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     images: {
+        localPatterns: [
+            {
+                pathname: '/assets/images/**',
+                search: '',
+            },
+        ],
         remotePatterns: [
             {
                 protocol: 'https', // 协议
@@ -18,6 +24,8 @@ const nextConfig: NextConfig = {
                 search: '', // 配置参数
             }
         ],
+        // loader: 'custom',
+        // loaderFile: './my/image/loader.js',
     },
 };
 
